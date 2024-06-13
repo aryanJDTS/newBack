@@ -1,17 +1,31 @@
-const express= require('express');
-const cors= require('cors');
-const connectDB = require('./db');
-const saveFormDataRouter = require('./saveFormData');
-const app= express();
-app.use(cors());
-app.use(express.json());
-connectDB();
+// index.js (or server.js)
 
-app.get('/',(req,res)=>{
-    res.send("hellow world")
-})
+const express = require('express');
+const mongoose = require('mongoose');
+const saveFormDataRouter = require('./saveFormData');
+const allowCors = require('./cors');
+
+const app = express();
+const PORT = process.env.PORT || 8000;
+
+// Apply CORS middleware to the router
 app.use('/saveLeadData', allowCors(saveFormDataRouter));
 
-app.listen(8000,()=>{
-    console.log("listining to port 8000")
+// Example root route
+app.get('/', (req, res) => {
+    res.send("Hello World");
+});
+
+// Connect to MongoDB (replace with your connection string)
+mongoose.connect('mongodb+srv://aryansharmaJDTS:3Z6ErXID14umhV9I@cluster0.vscwsxk.mongodb.net/', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
 })
+.then(() => {
+    console.log("MongoDB connected");
+    // Start the server
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+})
+.catch((err) => console.error(err));
